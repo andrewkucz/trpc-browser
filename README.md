@@ -1,8 +1,8 @@
-![trpc-browser](assets/trpc-browser-readme.png)
+![trpc-browser-lib](assets/trpc-browser-lib-readme.png)
 
 <div align="center">
   <h1>trpc-browser</h1>
-  <a href="https://www.npmjs.com/package/trpc-browser"><img src="https://img.shields.io/npm/v/trpc-browser.svg?style=flat&color=brightgreen" target="_blank" /></a>
+  <a href="https://www.npmjs.com/package/trpc-browser-lib"><img src="https://img.shields.io/npm/v/trpc-browser-lib.svg?style=flat&color=brightgreen" target="_blank" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-black" /></a>
   <a href="https://trpc.io/discord" target="_blank"><img src="https://img.shields.io/badge/chat-discord-blue.svg" /></a>
   <br />
@@ -16,6 +16,7 @@
   - ready for Manifest V3.
 - Typesafe messaging for windows
   - between window, any other window (eg iframe) or popups
+- Updated for TRPC 11 
 
 ## 📖 Table of contents
 
@@ -27,7 +28,7 @@
 - [📔 Requirements](#-requirements)
 - [📝 Example](#-example)
 - [🆎 Types](#-types)
-  - [ChromeLinkOptions](#chromelinkoptions)
+    - [ChromeLinkOptions](#chromelinkoptions)
   - [WindowLinkOptions](#windowlinkoptions)
   - [PopupLinkOptions](#popuplinkoptions)
   - [CreateChromeHandlerOptions](#createchromehandleroptions)
@@ -38,13 +39,13 @@
 
 ## 📦 Installation
 
-**Install `trpc-browser`.**
+**Install `trpc-browser-lib`.**
 
 ```bash
 # npm
-npm install trpc-browser
+npm install trpc-browser-lib
 # yarn
-yarn add trpc-browser
+yarn add trpc-browser-lib
 ```
 
 ## 🧩 Example usage for extensions
@@ -54,7 +55,7 @@ yarn add trpc-browser
 ```typescript
 // background.ts
 import { initTRPC } from '@trpc/server';
-import { createChromeHandler } from 'trpc-browser/adapter';
+import { createChromeHandler } from 'trpc-browser-lib/adapter';
 
 const t = initTRPC.create({
   isServer: false,
@@ -77,7 +78,7 @@ createChromeHandler({
 ```typescript
 // content.ts
 import { createTRPCClient } from '@trpc/client';
-import { chromeLink } from 'trpc-browser/link';
+import { chromeLink } from 'trpc-browser-lib/link';
 
 import type { AppRouter } from './background';
 
@@ -92,7 +93,7 @@ export const chromeClient = createTRPCProxyClient<AppRouter>({
 ```typescript
 // inpage.ts
 import { createTRPCProxyClient } from '@trpc/client';
-import { windowLink } from 'trpc-browser/link';
+import { windowLink } from 'trpc-browser-lib/link';
 
 import type { AppRouter } from './background';
 
@@ -103,7 +104,7 @@ export const windowClient = createTRPCProxyClient<AppRouter>({
 
 ```typescript
 // content.ts
-import { relay } from 'trpc-browser/relay';
+import { relay } from 'trpc-browser-lib/relay';
 
 const port = chrome.runtime.connect();
 relay(window, port);
@@ -116,7 +117,7 @@ relay(window, port);
 ```typescript
 // main.ts
 import { initTRPC } from '@trpc/server';
-import { createWindowHandler } from 'trpc-browser/adapter';
+import { createWindowHandler } from 'trpc-browser-lib/adapter';
 
 const t = initTRPC.create({
   isServer: false,
@@ -139,7 +140,7 @@ createWindowHandler({
 
 ```typescript
 import { createTRPCProxyClient } from '@trpc/client';
-import { popupLink, windowLink } from 'trpc-browser/link';
+import { popupLink, windowLink } from 'trpc-browser-lib/link';
 
 import type { AppRouter } from './main';
 
