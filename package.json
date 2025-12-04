@@ -5,7 +5,13 @@
 	"author": "Janek Rahrt <janek.rahrt@me.com>, James Berry <jb@jamesbe.com>",
 	"private": false,
 	"license": "MIT",
-	"files": ["types", "adapter", "link", "relay", "shared"],
+	"files": [
+		"types",
+		"adapter",
+		"link",
+		"relay",
+		"shared"
+	],
 	"keywords": [
 		"trpc",
 		"chrome",
@@ -20,7 +26,10 @@
 	"homepage": "https://github.com/janek26/trpc-browser",
 	"repository": "github:janek26/trpc-browser",
 	"bugs": "https://github.com/janek26/trpc-browser/issues",
-	"workspaces": [".", "examples/with-plasmo"],
+	"workspaces": [
+		".",
+		"examples/with-plasmo"
+	],
 	"scripts": {
 		"prepare": "npm run build",
 		"test": "tsc --noEmit && jest --verbose",
