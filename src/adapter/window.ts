@@ -20,8 +20,7 @@ export const createWindowHandler = <TRouter extends AnyRouter>(
 ) => {
   const { router, createContext, onError, window, postOrigin } = opts;
   if (!window) {
-    console.warn("Skipping window handler creation: 'opts.window' not defined");
-    return;
+    throw new Error('No window provided');
   }
 
   const loadListener = opts.postWindow ?? window.opener ?? window;
