@@ -26,10 +26,10 @@ export const createChromeHandler = <TRouter extends AnyRouter>(
   }
 
   chrome.runtime.onConnect.addListener((port) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { transformer } = router._def._config;
     const subscriptions = new Map<number | string, Unsubscribable>();
     const listeners: (() => void)[] = [];
+    const abortController = new AbortController();
 
     const cleanup = () => listeners.forEach((unsub) => unsub());
     port.onDisconnect.addListener(cleanup);
@@ -52,7 +52,20 @@ export const createChromeHandler = <TRouter extends AnyRouter>(
       }
       const { method, params, id } = trpc;
 
-      const ctx = await createContext?.({ req: port, res: undefined });
+      const ctx = await createContext?.({
+        req: port,
+        res: undefined,
+        // why ????
+        info: {
+          accept: null,
+          calls: [],
+          connectionParams: {},
+          isBatchCall: false,
+          signal: abortController.signal,
+          type: method,
+          url: null,
+        },
+      });
       const handleError = (cause: unknown) => {
         const error = getErrorFromUnknown(cause);
 

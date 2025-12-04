@@ -57,8 +57,21 @@ export const createWindowHandler = <TRouter extends AnyRouter>(
       return sendResponse({ result: { type: 'stopped' } });
     }
     const { method, params, id } = trpc;
-
-    const ctx = await createContext?.({ req: { origin: event.origin }, res: undefined });
+    const abortController = new AbortController();
+    // why ????
+    const ctx = await createContext?.({
+      req: { origin: event.origin },
+      res: undefined,
+      info: {
+        accept: null,
+        calls: [],
+        connectionParams: {},
+        isBatchCall: false,
+        signal: abortController.signal,
+        type: method,
+        url: null,
+      },
+    });
     const handleError = (cause: unknown) => {
       const error = getErrorFromUnknown(cause);
 
