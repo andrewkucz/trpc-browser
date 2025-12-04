@@ -149,4 +149,6 @@ export const createWindowHandler = <TRouter extends AnyRouter>(
 
   window.addEventListener('message', onMessage);
   listeners.push(() => window.removeEventListener('message', onMessage));
+
+  return { cleanup };
 };
