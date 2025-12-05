@@ -1,3 +1,5 @@
+import { type TransformerOptions } from '@trpc/client/src/internals/transformer';
+import { AnyRouter, inferTRPCClientTypes } from '@trpc/server';
 import type {
   TRPCClientOutgoingMessage,
   TRPCErrorResponse,
@@ -39,3 +41,7 @@ export interface MessengerMethods {
   addCloseListener: (listener: () => void) => void;
   removeCloseListener: (listener: () => void) => void;
 }
+
+export type RouterTransformerOptions<TRouter extends AnyRouter> = TransformerOptions<
+  inferTRPCClientTypes<TRouter>
+>;
