@@ -1,5 +1,6 @@
 import { TRPCClientError, type TRPCLink } from '@trpc/client';
-import type { AnyRouter } from '@trpc/server';
+import { getTransformer } from '@trpc/client/src/internals/transformer';
+import type { AnyRouter, CombinedDataTransformer } from '@trpc/server';
 import { observable } from '@trpc/server/observable';
 
 import { isTRPCResponse } from '../../shared/trpcMessage';
@@ -7,7 +8,9 @@ import type { MessengerMethods, TRPCChromeRequest } from '../../types';
 
 export const createBaseLink = <TRouter extends AnyRouter>(
   methods: MessengerMethods,
+  _transformer?: CombinedDataTransformer,
 ): TRPCLink<TRouter> => {
+  const transformer = getTransformer(_transformer);
   return () => {
     return ({ op }) => {
       return observable((observer) => {
@@ -37,7 +40,7 @@ export const createBaseLink = <TRouter extends AnyRouter>(
                 ...trpc.result,
                 ...((!trpc.result.type || trpc.result.type === 'data') && {
                   type: 'data',
-                  data: trpc.result.data,
+                  data: transformer.output.serialize(trpc.result.data),
                 }),
               },
             });
@@ -56,7 +59,7 @@ export const createBaseLink = <TRouter extends AnyRouter>(
               jsonrpc: undefined,
               method: type,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              params: { path, input },
+              params: { path, input: transformer.input.serialize(input) },
             },
           } as TRPCChromeRequest);
         } catch (cause) {
