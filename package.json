@@ -1,6 +1,6 @@
 {
 	"name": "trpc-browser-lib",
-	"version": "2.1.3",
+	"version": "2.2.0",
 	"description": "tRPC adapters and links for everywhere in the browser",
 	"author": "Andrew Kuczynski <akucz@me.com>, Janek Rahrt <janek.rahrt@me.com>, James Berry <jb@jamesbe.com>",
 	"private": false,
