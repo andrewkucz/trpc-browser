@@ -1,17 +1,16 @@
 import { TRPCClientError, type TRPCLink } from '@trpc/client';
-import type { AnyRouter } from '@trpc/server';
+import { getTransformer } from '@trpc/client/src/internals/transformer';
+import type { AnyRouter, CombinedDataTransformer } from '@trpc/server';
 import { observable } from '@trpc/server/observable';
 
-import { getTransformer } from '../../shared/transformer';
 import { isTRPCResponse } from '../../shared/trpcMessage';
-import type { MessengerMethods, RouterTransformerOptions, TRPCChromeRequest } from '../../types';
+import type { MessengerMethods, TRPCChromeRequest } from '../../types';
 
 export const createBaseLink = <TRouter extends AnyRouter>(
   methods: MessengerMethods,
-  _transformer?: RouterTransformerOptions<TRouter>['transformer'],
+  _transformer?: CombinedDataTransformer,
 ): TRPCLink<TRouter> => {
   const transformer = getTransformer(_transformer);
-  console.log({ transformer });
   return () => {
     return ({ op }) => {
       return observable((observer) => {
@@ -31,8 +30,6 @@ export const createBaseLink = <TRouter extends AnyRouter>(
             if (!isTRPCResponse(message)) return;
             const { trpc } = message;
             if (id !== trpc.id) return;
-
-            console.log('onMessage', message);
 
             if ('error' in trpc) {
               return observer.error(TRPCClientError.from(trpc));
@@ -56,7 +53,7 @@ export const createBaseLink = <TRouter extends AnyRouter>(
           methods.addMessageListener(onMessage);
           listeners.push(() => methods.removeMessageListener(onMessage));
 
-          const message = {
+          methods.postMessage({
             trpc: {
               id,
               jsonrpc: undefined,
@@ -64,9 +61,7 @@ export const createBaseLink = <TRouter extends AnyRouter>(
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               params: { path, input: transformer.input.serialize(input) },
             },
-          } as TRPCChromeRequest;
-          console.log('postMessage', message);
-          methods.postMessage(message);
+          } as TRPCChromeRequest);
         } catch (cause) {
           observer.error(
             new TRPCClientError(cause instanceof Error ? cause.message : 'Unknown error'),
